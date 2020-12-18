@@ -66,6 +66,11 @@
       'top.jpg', 'bottom.jpg',
       'front.jpg', 'back.jpg'
     ]);
+    // var cubeTexture = cubeTextureLoader.load([
+    //   '1.jpg', '2.jpg',
+    //   '3.jpg', '4.jpg',
+    //   '5.jpg', '6.jpg'
+    // ]);
 
     scene = new THREE.Scene();
 
@@ -78,13 +83,13 @@
     gui = {
       addTexture: function () {
         //添加平面贴图
-        material.map = new THREE.TextureLoader().load("/lib/textures/planets/earth_atmos_2048.jpg");
-        material.needsUpdate = true;
+        // material.map = new THREE.TextureLoader().load("/lib/textures/planets/earth_atmos_2048.jpg");
+        // material.needsUpdate = true;
       },
       addNormal: function () {
         //添加法向量纹理
-        material.normalMap = new THREE.TextureLoader().load("/lib/textures/planets/earth_normal_2048.jpg");
-        material.needsUpdate = true;
+        // material.normalMap = new THREE.TextureLoader().load("/lib/textures/planets/earth_normal_2048.jpg");
+        // material.needsUpdate = true;
       },
       shininess: 10
     };

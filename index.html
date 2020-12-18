@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <title>第一个three.js文件_WebGL三维场景</title>
@@ -8,13 +7,10 @@
     body {
       margin: 0;
       overflow: hidden;
-      /* 隐藏body窗口区域滚动条 */
     }
   </style>
   <!--引入three.js三维引擎-->
   <script src="http://www.yanhuangxueyuan.com/versions/threejsR92/build/three.js"></script>
-  <!-- <script src="./three.js"></script> -->
-  <!-- <script src="http://www.yanhuangxueyuan.com/threejs/build/three.js"></script> -->
 </head>
 
 <body>
@@ -26,8 +22,7 @@
     /**
      * 创建网格模型
      */
-    var geometry = new THREE.SphereGeometry(60, 40, 40); //创建一个球体几何对象
-    // var geometry = new THREE.BoxGeometry(100, 100, 100); //创建一个立方体几何对象Geometry
+    var geometry = new THREE.BoxGeometry(100, 100, 100); //创建一个立方体几何对象Geometry
     var material = new THREE.MeshLambertMaterial({
       color: 0xffff00
     }); //材质对象Material
@@ -43,8 +38,6 @@
     //环境光
     var ambient = new THREE.AmbientLight(0x1acd7e);
     scene.add(ambient);
-    // console.log(scene)
-    // console.log(scene.children)
     /**
      * 相机设置
      */
