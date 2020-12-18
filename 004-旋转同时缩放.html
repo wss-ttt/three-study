@@ -53,7 +53,8 @@
 
     // 辅助坐标系的显示
     let axisHelper = new THREE.AxisHelper(200)
-
+    scene.add(axisHelper)
+    
     // 创建渲染器对象
     let renderer = new THREE.WebGLRenderer();
     renderer.setSize(width, height); //设置渲染区域尺寸
