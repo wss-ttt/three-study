@@ -17,7 +17,7 @@
   </style>
 </head>
 
-<body onload="draw();">
+<body onload="init();">
 </body>
 <script src="js/three.js"></script>
 <script src="js/OrbitControls.js"></script>
@@ -169,38 +169,43 @@
     controls.enableZoom = true;
     //是否自动旋转
     controls.autoRotate = false;
+    // 控制自动旋转的速度
     controls.autoRotateSpeed = 0.5;
     //设置相机距离原点的最远距离
     controls.minDistance = 1;
     //设置相机距离原点的最远距离
-    controls.maxDistance = 2000;
+    controls.maxDistance = 2000 * 1000;
     //是否开启右键拖拽
     controls.enablePan = true;
   }
 
   function render() {
-    //让地球自转
+    //让地球自转 沿着y轴进行旋转(此处的效果就是自转的效果)
     earth.rotation.y += 0.01;
   }
 
   //窗口变动触发的函数
   function onWindowResize() {
+    // aspect: 摄像机视锥体的长宽比，通常是使用画布的宽/画布的高。默认值是1（正方形画布）
     camera.aspect = window.innerWidth / window.innerHeight;
+    // updateProjectionMatrix让改变的属性生效
     camera.updateProjectionMatrix();
+    // 重新设置渲染器的大小
     renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
   function animate() {
-    //更新控制器
     render();
     //更新性能插件
-    stats.update();
+    // stats.update();
     controls.update();
+    //执行渲染操作   指定场景、相机作为参数
     renderer.render(scene, camera);
+    // 执行动画效果,相当于定时器
     requestAnimationFrame(animate);
   }
-
-  function draw() {
+  // 主入口函数
+  function init() {
     //兼容性判断
     if (!Detector.webgl) Detector.addGetWebGLMessage();
     // 1.创建控制面板
@@ -212,7 +217,6 @@
     initModel();
     initControls();
     // initStats();
-
     animate();
     window.onresize = onWindowResize;
   }
