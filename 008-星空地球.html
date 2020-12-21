@@ -30,30 +30,29 @@
 
   function initRender() {
     renderer = new THREE.WebGLRenderer({
-      antialias: true
+      antialias: true // 是否执行抗锯齿。默认为false
     });
+    // 设置设备像素比。通常用于避免HiDPI设备上绘图模糊
     renderer.setPixelRatio(window.devicePixelRatio);
+    // .setSize ( width : Integer, height : Integer, updateStyle : Boolean ) : null
+    // 将输出canvas的大小调整为(width, height)并考虑设备像素比，且将视口从(0, 0)开始调整到适合大小 将updateStyle设置为false以阻止对canvas的样式做任何改变。
     renderer.setSize(window.innerWidth, window.innerHeight);
+    // .setClearColor ( color : Color, alpha : Float ) : null ,设置颜色及其透明度
     renderer.setClearColor(0xeeeeee);
-    renderer.shadowMap.enabled = true;
     //告诉渲染器需要阴影效果
+    renderer.shadowMap.enabled = true;
+    // 将渲染器这个对象插入到body中去,其实是一个canvas对象
     document.body.appendChild(renderer.domElement);
   }
 
   function initCamera() {
+    // 透视相机
+    // 这一投影模式被用来模拟人眼所看到的景象，它是3D场景的渲染中使用得最普遍的投影模式
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
+    // 设置相机的位置
     camera.position.set(0, 12, 15);
-
-    //CubeCamera（near：Number，far：Number，cubeResolution：Number）
-    //近 - 近裁剪距离。
-    //远 - 裁剪距离
-    //cubeResolution - 设置立方体边缘的长度。
-
-    //可以通过renderTarget对象获取生成的立方体纹理。
-
-    //创建一个获取环境贴图的cubeCamera
-    cubeCamera = new THREE.CubeCamera(0.1, 1000, 256);
-    scene.add(cubeCamera);
+    // 将相机添加到场景中去 
+    scene.add(camera);
   }
 
   function initScene() {
@@ -65,10 +64,13 @@
       'right.jpg', 'left.jpg',
       'top.jpg', 'bottom.jpg',
       'front.jpg', 'back.jpg'
-    ]);
+    ], function (texture) {
+      console.log(texture)
+      console.log('图像加载完毕')
+    });
 
+    // 创建一个场景对象
     scene = new THREE.Scene();
-
     scene.background = cubeTexture;
   }
 
@@ -98,20 +100,18 @@
   }
 
   function initLight() {
+    // AmbientLight: 环境光会均匀的照亮场景中的所有物体
     scene.add(new THREE.AmbientLight(0x444444));
-
+    // DirectionalLight: 平行光是沿着特定方向发射的光。这种光的表现像是无限远,从它发出的光线都是平行的。常常用平行光来模拟太阳光 的效果; 太阳足够远，因此我们可以认为太阳的位置是无限远，所以我们认为从太阳发出的光线也都是平行的。
     light = new THREE.DirectionalLight(0xffffff);
+    // 设置平行光源的位置
     light.position.set(0, 20, 20);
-
+    // castShadow = true: 如果设置为 true 该平行光会产生动态阴影。 警告: 这样做的代价比较高而且需要一直调整到阴影看起来正确.
     light.castShadow = true;
     light.shadow.camera.top = 10;
     light.shadow.camera.bottom = -10;
     light.shadow.camera.left = -10;
     light.shadow.camera.right = 10;
-
-    //告诉平行光需要开启阴影投射
-    light.castShadow = true;
-
     scene.add(light);
   }
 
@@ -122,24 +122,31 @@
     scene.add(helper);
 
     //添加地球
+    // SphereGeometry: 一个用于生成球体的类
+    // SphereGeometry(radius : Float, widthSegments : Integer, heightSegments : Integer, phiStart : Float, phiLength : Float, thetaStart : Float, thetaLength : Float)
+    // radius — 球体半径，默认为1。
+    // widthSegments — 水平分段数（沿着经线分段），最小值为3，默认值为8。
+    // heightSegments — 垂直分段数（沿着纬线分段），最小值为2，默认值为6。
+    // phiStart — 指定水平（经线）起始角度，默认值为0。。
+    // phiLength — 指定水平（经线）扫描角度的大小，默认值为 Math.PI * 2。
+    // thetaStart — 指定垂直（纬线）起始角度，默认值为0。
+    // thetaLength — 指定垂直（纬线）扫描角度大小，默认值为 Math.PI。
     var geometry = new THREE.SphereGeometry(5, 60, 30);
+    // MeshPhongMaterial:Phong网格材质
     material = new THREE.MeshPhongMaterial({
       color: 0x666666
     });
 
     //添加高光贴图
     material.specularMap = new THREE.TextureLoader().load("images/earth_specular_2048.jpg");
-
-    //添加高光颜色
+    //添加高光颜色 材质的高光颜色
     material.specular = new THREE.Color(0x00ffff);
-
     //添加高光的平滑度，默认为30，值越高越强烈
     material.shininess = 10;
-
-    //添加到场景
+    // 创建网格对象
     earth = new THREE.Mesh(geometry, material);
+    // 将网格对象添加场景中去
     scene.add(earth);
-
   }
 
   //初始化性能插件
@@ -149,7 +156,6 @@
   }
 
   function initControls() {
-
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     //设置控制器的中心点
     //controls.target.set( 0, 5, 0 );
@@ -179,39 +185,33 @@
 
   //窗口变动触发的函数
   function onWindowResize() {
-
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-
   }
 
   function animate() {
     //更新控制器
     render();
-
     //更新性能插件
     stats.update();
-
     controls.update();
-
     renderer.render(scene, camera);
-
     requestAnimationFrame(animate);
   }
 
   function draw() {
     //兼容性判断
     if (!Detector.webgl) Detector.addGetWebGLMessage();
-
-    initGui();
+    // 1.创建控制面板
+    // initGui();
     initRender();
     initScene();
     initCamera();
     initLight();
     initModel();
     initControls();
-    initStats();
+    // initStats();
 
     animate();
     window.onresize = onWindowResize;
