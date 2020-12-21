@@ -80,10 +80,14 @@
     //执行渲染操作   指定场景、相机作为参数
     renderer.render(scene, camera);
 
-    let controls = new THREE.OrbitControls(camera)
-    controls.addEventListener('change', function () {
-      renderer.render(scene, camera);
-    })
+    let controls
+    orbitControls()
+    function orbitControls() {
+      controls = new THREE.OrbitControls(camera)
+      controls.addEventListener('change', function () {
+        renderer.render(scene, camera);
+      })
+    }
   </script>
 </body>
 
