@@ -20,41 +20,37 @@
     let camera, scene, renderer;
     let mesh;
 
-    init();
+    // 1.创建场景对象
+    scene = new THREE.Scene();
+    // 2.创建相机对象
+    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
+    camera.position.z = 400;
+    const texture = new THREE.TextureLoader().load('images/crate.gif');
+    // 创建一个立方体
+    const geometry = new THREE.BoxBufferGeometry(200, 200, 200);
+    // 创建材质对象
+    const material = new THREE.MeshBasicMaterial({
+      map: texture
+    });
+    // 3.创建网格对象
+    mesh = new THREE.Mesh(geometry, material);
+    // 4.将网格对象添加到场景中去
+    scene.add(mesh);
+
+    // 5.创建一个渲染器对象
+    renderer = new THREE.WebGLRenderer({
+      antialias: true
+    });
+
+    // 设置设备像素比
+    renderer.setPixelRatio(window.devicePixelRatio);
+    // 设置大小
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    // 将渲染器对象添加到body中去
+    document.body.appendChild(renderer.domElement);
     animate();
-
-    function init() {
-      // 1.创建场景对象
-      scene = new THREE.Scene();
-      // 2.创建相机对象
-      camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 1000);
-      camera.position.z = 400;
-      const texture = new THREE.TextureLoader().load('https://threejs.org/examples/textures/crate.gif');
-      // 创建一个立方体
-      const geometry = new THREE.BoxBufferGeometry(200, 200, 200);
-      // 创建材质对象
-      const material = new THREE.MeshBasicMaterial({
-        map: texture
-      });
-      // 3.创建网格对象
-      mesh = new THREE.Mesh(geometry, material);
-      // 4.将网格对象添加到场景中去
-      scene.add(mesh);
-
-      // 5.创建一个渲染器对象
-      renderer = new THREE.WebGLRenderer({
-        antialias: true
-      });
-
-      // 设置设备像素比
-      renderer.setPixelRatio(window.devicePixelRatio);
-      // 设置大小
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      // 将渲染器对象添加到body中去
-      document.body.appendChild(renderer.domElement);
-      // 监听窗口大小改变事件
-      window.addEventListener('resize', onWindowResize, false);
-    }
+    // 监听窗口大小改变事件
+    window.addEventListener('resize', onWindowResize, false);
 
     function onWindowResize() {
       camera.aspect = window.innerWidth / window.innerHeight;
