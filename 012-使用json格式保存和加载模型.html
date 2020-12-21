@@ -245,13 +245,16 @@
 
       animate();
       window.onresize = onWindowResize;
-      // 鼠标拖拽控制
-      let controls = new THREE.OrbitControls(camera)
-      controls.addEventListener('change', function () {
+      orbitControls();
+    }
+
+    let ctrl = null
+    function orbitControls() {
+      ctrl = new THREE.OrbitControls(camera)
+      ctrl.addEventListener('change', function () {
         renderer.render(scene, camera);
       })
     }
-
   </script>
 </body>
 
