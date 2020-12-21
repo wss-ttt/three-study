@@ -24,7 +24,7 @@
   <script src="js/stats.min.js"></script>
   <script src="js/dat.gui.min.js"></script>
   <script>
-    var renderer;
+    let renderer;
 
     function initRender() {
       renderer = new THREE.WebGLRenderer({
@@ -37,7 +37,7 @@
       document.body.appendChild(renderer.domElement);
     }
 
-    var camera;
+    let camera;
 
     function initCamera() {
       camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -45,72 +45,67 @@
       camera.lookAt(new THREE.Vector3(0, 0, 0));
     }
 
-    var scene;
+    let scene;
 
     function initScene() {
       scene = new THREE.Scene();
     }
 
     //初始化dat.GUI简化试验流程
-    var gui;
-
+    let gui;
     function initGui() {
       //声明一个保存需求修改的相关数据的对象
       gui = {
         exportScene: function () {
-          var sceneJson = JSON.stringify(scene.toJSON());
+          let sceneJson = JSON.stringify(scene.toJSON());
           localStorage.setItem('scene', sceneJson);
         },
         clearScene: function () {
           scene = new THREE.Scene();
         },
         importScene: function () {
-          var json = localStorage.getItem("scene");
-
+          let json = localStorage.getItem('scene');
           if (json) {
-            var loadedGeometry = JSON.parse(json);
-            var loader = new THREE.ObjectLoader();
-
+            let loadedGeometry = JSON.parse(json);
+            let loader = new THREE.ObjectLoader();
             scene = loader.parse(loadedGeometry);
           }
         },
-        good: function() {
+        good: function () {
           alert('好好学习')
         }
       };
-      var datGui = new dat.GUI();
+      let datGui = new dat.GUI();
       //将设置属性添加到gui当中，gui.add(对象，属性，最小值，最大值）
-      datGui.add(gui, "exportScene");
-      datGui.add(gui, "clearScene");
-      datGui.add(gui, "importScene");
-      datGui.add(gui, "good");
+      datGui.add(gui, 'exportScene');
+      datGui.add(gui, 'clearScene');
+      datGui.add(gui, 'importScene');
+      datGui.add(gui, 'good');
     }
 
-    var light;
+    let light;
 
     function initLight() {
+      // 在场景中添加环境光
       scene.add(new THREE.AmbientLight(0x444444));
-
+      // 创建点光源对象
       light = new THREE.PointLight(0xffffff);
+      // 设置点光源的位置
       light.position.set(15, 50, 10);
-
       //告诉平行光需要开启阴影投射
       light.castShadow = true;
-
+      // 在场景中添加点光源对象
       scene.add(light);
     }
 
-    var sphere, cube, group;
-
+    let sphere, cube, group;
     function initModel() {
-
       //模型组
       group = new THREE.Object3D();
       scene.add(group);
-
       //球
-      var sphereGeometry = new THREE.SphereGeometry(5, 200, 200);
-      var sphereMaterial = new THREE.MeshLambertMaterial({
+      let sphereGeometry = new THREE.SphereGeometry(5, 200, 200);
+      let sphereMaterial = new THREE.MeshLambertMaterial({
         color: 0xaaaaaa
       });
 
@@ -124,19 +119,19 @@
       group.add(sphere);
 
       //辅助工具
-      var helper = new THREE.AxesHelper(50);
+      let helper = new THREE.AxesHelper(50);
       scene.add(helper);
 
       //立方体
-      var cubeGeometry = new THREE.CubeGeometry(10, 10, 8);
-      var cubeMaterial = new THREE.MeshLambertMaterial({
+      let cubeGeometry = new THREE.CubeGeometry(10, 10, 8);
+      let cubeMaterial = new THREE.MeshLambertMaterial({
         color: 0x00ffff
       });
 
       cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-      cube.position.x = 15;
-      cube.position.y = 5;
-      cube.position.z = -5;
+      cube.position.x = 10;
+      cube.position.y = 20;
+      cube.position.z = 0;
 
       //告诉立方体需要投射阴影
       cube.castShadow = true;
@@ -144,12 +139,12 @@
       group.add(cube);
 
       //底部平面
-      var planeGeometry = new THREE.PlaneGeometry(100, 100);
-      var planeMaterial = new THREE.MeshStandardMaterial({
+      let planeGeometry = new THREE.PlaneGeometry(100, 100);
+      let planeMaterial = new THREE.MeshStandardMaterial({
         color: 0xaaaaaa
       });
 
-      var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+      let plane = new THREE.Mesh(planeGeometry, planeMaterial);
       plane.rotation.x = -0.5 * Math.PI;
       plane.position.y = -0;
 
@@ -161,7 +156,7 @@
     }
 
     //初始化性能插件
-    var stats;
+    let stats;
 
     function initStats() {
       stats = new Stats();
@@ -169,7 +164,7 @@
     }
 
     //用户交互插件 鼠标左键按住旋转，右键按住平移，滚轮缩放
-    var controls;
+    let controls;
 
     function initControls() {
 
@@ -193,7 +188,7 @@
       controls.enablePan = true;
     }
 
-    var step = 0.02; //模型旋转的速度
+    let step = 0.02; //模型旋转的速度
     function render() {
 
       //判断当前是否自动旋转
@@ -212,12 +207,10 @@
 
     //窗口变动触发的函数
     function onWindowResize() {
-
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       render();
       renderer.setSize(window.innerWidth, window.innerHeight);
-
     }
 
     function animate() {
