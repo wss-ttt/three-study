@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <script src="js/three.js"></script>
+  <script>
+    // 创建Scene对象
+    const scene = new THREE.Scene();
+    // 创建camera对象
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    // 创建renderer对象
+    const renderer = new THREE.WebGLRenderer();
+    // 设置渲染器的尺寸
+    renderer.setSize(window.innerWidth / 2, window.innerHeight / 2);
+    // 将渲染器的dom元素添加到html文档中去
+    document.body.appendChild(renderer.domElement);
+    // 创建一个立方体
+    const geometry = new THREE.BoxGeometry();
+    // 创建材质
+    const material = new THREE.MeshBasicMaterial({
+      color: 0x00ff00
+    });
+    // 创建网格对象
+    const cube = new THREE.Mesh(geometry, material);
+    // 默认情况下，当我们调用scene.add()的时候，物体将会被添加到(0,0,0)坐标。但将使得摄像机和立方体彼此在一起。为了防止这种情况的发生，我们只需要将摄像机稍微向外移动一些即可。
+    scene.add(cube);
+    camera.position.z = 5;
+    // 渲染场景
+    function animate() {
+      requestAnimationFrame(animate);
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+
+</html>
