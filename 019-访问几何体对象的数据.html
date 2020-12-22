@@ -41,12 +41,6 @@
     console.log('颜色', geometry.colors);
     console.log('三角行面数据', geometry.faces);
 
-    //创建一个矩形平面几何体
-    /* let geometry = new THREE.PlaneBufferGeometry(100, 100);
-    console.log(geometry);
-    console.log('几何体顶点位置数据', geometry.attributes.position);
-    console.log('几何体索引数据', geometry.index); */
-    
     // 在立方体的每个顶点创建一个小圆球
     let vertices = geometry.vertices;
     vertices.forEach(item => {
