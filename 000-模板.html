@@ -11,19 +11,45 @@
       padding: 0;
       overflow: hidden;
     }
+    .action {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 10px;
+      background: rgba(0, 0, 0, .3);
+      display: flex;
+    }
+    .action .btn {
+      color: #fff;
+      border: 1px solid #ccc;
+      padding: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 15px;
+    }
   </style>
 </head>
 
 <body>
+  <div class="action">
+    <div class="btn">测试1</div>
+    <div class="btn">测试2</div>
+  </div>
   <script src="js/three.js"></script>
   <script src="js/OrbitControls.js"></script>
   <script src="js/stats.min.js"></script>
   <script src="js/dat.gui.min.js"></script>
   <script>
     /**
-     * 学习网址: http://www.webgl3d.cn/Three.js/ 
+     * 学习网址: 
+     * http://www.webgl3d.cn/Three.js/
+     * http://www.wjceo.com/blog/threejs/ 
+     * 
      * **/
+    
     /**
+     * 单词积累:
      * 1.cube: 立方体
      * 2.Geometry: 几何学
      * 3.Material: 材料 材质
@@ -34,7 +60,9 @@
      * 8.Camera 相机
      * 9.wireframe 线框 线框图
      * 10.fog: 雾
+     * 11.Cylinder: 圆柱体
      * **/
+    
     // 1.场景 2.渲染器 3.相机
     let scene = new THREE.Scene()
     let geometry = new THREE.BoxGeometry(60, 60, 60)
