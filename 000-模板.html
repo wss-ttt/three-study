@@ -37,7 +37,7 @@
      * **/
     // 1.场景 2.渲染器 3.相机
     let scene = new THREE.Scene()
-    let geometry = new THREE.BoxGeometry(120, 120, 120)
+    let geometry = new THREE.BoxGeometry(60, 60, 60)
     // 材质对象
     let material = new THREE.MeshLambertMaterial({
       color: 0x1acd7e
@@ -84,18 +84,29 @@
     renderer.setSize(width, height); //设置渲染区域尺寸
     renderer.setClearColor(0xb9d3ff, 0.4); //设置背景颜色
     document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
-    //执行渲染操作   指定场景、相机作为参数
-    renderer.render(scene, camera);
-
+    
     let controls
-    orbitControls()
     function orbitControls() {
       controls = new THREE.OrbitControls(camera)
       controls.addEventListener('change', function () {
         renderer.render(scene, camera);
       })
     }
-
+    
+    function render() {
+      //执行渲染操作   指定场景、相机作为参数
+      renderer.render(scene, camera);
+      /* mesh.rotateX(0.01);
+      mesh.rotateY(0.01);
+      mesh.rotateZ(0.01);
+      requestAnimationFrame(render); */
+    }
+    
+    init(); 
+    function init() {
+      orbitControls();
+      render();
+    }
     //用户交互插件 鼠标左键按住旋转，右键按住平移，滚轮缩放
     /* var controls;
     function initControls() {
