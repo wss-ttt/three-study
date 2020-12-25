@@ -153,8 +153,18 @@
       )
       mesh2.name = 'Sphere';
 
+      let geometry3 = new THREE.SphereGeometry(10, 60, 60);
+      let material3 = new THREE.MeshLambertMaterial({
+        color: 0xffbb33
+      })
+      let mesh3 = new THREE.Mesh(
+        geometry3,
+        material3
+      )
+      mesh3.name = 'Sphere2';
+      mesh3.translateY(200);
       let group = new THREE.Group();
-      group.add(mesh1, mesh2);
+      group.add(mesh1, mesh2, mesh3);
       // 将网格模型对象添加场景中去
       scene.add(group);
 
