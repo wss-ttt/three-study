@@ -127,35 +127,39 @@
 
     // 5.创建模型
     function initModel() {
+      group = new THREE.Group();
       /**
        * 精灵创建下雨效果
        */
-      // 加载雨滴理贴图
-      let textureTree = new THREE.TextureLoader().load('images/rain.png');
-      group = new THREE.Group();
-      // 批量创建表示雨滴的精灵模型
-      for (let i = 0; i < 400; i++) {
-        let spriteMaterial = new THREE.SpriteMaterial({
-          map: textureTree, //设置精灵纹理贴图
-        });
-        // 创建精灵模型对象
-        let sprite = new THREE.Sprite(spriteMaterial);
-        // 控制精灵大小,
-        sprite.scale.set(8, 10, 1); //// 只需要设置x、y两个分量就可以
-        let k1 = Math.random() - 0.5;
-        let k2 = Math.random() - 0.5;
-        let k3 = Math.random() - 0.5;
-        // 设置精灵模型位置，在整个空间上上随机分布
-        sprite.position.set(400 * k1, 150 * k3, 400 * k2);
-        group.add(sprite);
+      createRain();
 
+      function createRain() {
+        // 批量创建表示雨滴的精灵模型
+        for (let i = 0; i < 400; i++) {
+          let texture = new THREE.TextureLoader().load('images/rain.png');
+          let spriteMaterial = new THREE.SpriteMaterial({
+            map: texture, //设置精灵纹理贴图
+          });
+          // 创建精灵模型对象
+          let sprite = new THREE.Sprite(spriteMaterial);
+          // 控制精灵大小,
+          sprite.scale.set(8, 10, 1); //// 只需要设置x、y两个分量就可以
+          let k1 = Math.random() - 0.5;
+          let k2 = Math.random() - 0.5;
+          let k3 = Math.random() - 0.5;
+          // 设置精灵模型位置，在整个空间上上随机分布
+          sprite.position.set(400 * k1, 150 * k3, 400 * k2);
+          group.add(sprite);
+
+        }
+        /**
+         * 创建一个草地平面 
+         * **/
         createLawn();
+
         function createLawn() {
-          /**
-           * 创建一个草地平面 
-           * **/
           let geometry = new THREE.PlaneGeometry(400, 400); //矩形平面
-          texture = new THREE.TextureLoader().load('images/grass.jpg');
+          let texture = new THREE.TextureLoader().load('images/grass.jpg');
           // 设置纹理的重复模式
           texture.wrapS = THREE.RepeatWrapping;
           texture.wrapT = THREE.RepeatWrapping;
@@ -192,7 +196,7 @@
 
     // 7.创建控制对象
     function initControls() {
-      controls = new THREE.OrbitControls(camera)
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.addEventListener('change', function () {
         render();
       })
