@@ -78,6 +78,11 @@
 
     // 3.创建相机对象
     function initCamera() {
+      initOrthographicCamera();
+    }
+
+    // 3.1正投影相机
+    function initOrthographicCamera() {
       let width = window.innerWidth; //窗口宽度
       let height = window.innerHeight; //窗口高度
       let k = width / height; //窗口宽高比

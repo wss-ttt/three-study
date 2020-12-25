@@ -78,6 +78,11 @@
 
     // 3.创建相机对象
     function initCamera() {
+      initPerspectiveCamera();
+    }
+
+    // 3.1透视投影相机
+    function initPerspectiveCamera() {
       let width = window.innerWidth; //窗口宽度
       let height = window.innerHeight; //窗口高度
       //创建相机对象
