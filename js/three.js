@@ -32747,7 +32747,8 @@
 
 	function KeyframeTrack( name, times, values, interpolation ) {
 
-		KeyframeTrackConstructor.apply( this, name, times, values, interpolation );
+		// KeyframeTrackConstructor.apply( this, name, times, values, interpolation );
+		KeyframeTrackConstructor.call( this, name, times, values, interpolation );
 
 	}
 
