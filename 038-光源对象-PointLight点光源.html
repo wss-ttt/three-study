@@ -96,7 +96,7 @@
     orbitControls()
 
     function orbitControls() {
-      controls = new THREE.OrbitControls(camera)
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.addEventListener('change', function () {
         renderer.render(scene, camera);
       })

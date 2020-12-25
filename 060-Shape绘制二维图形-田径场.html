@@ -147,7 +147,7 @@
 
     // 7.创建控制对象
     function initControls() {
-      controls = new THREE.OrbitControls(camera)
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
       controls.addEventListener('change', function () {
         render();
       })

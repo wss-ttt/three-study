@@ -102,7 +102,7 @@
     document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
     //执行渲染操作   指定场景、相机作为参数
     renderer.render(scene, camera);
-    let controls = new THREE.OrbitControls(camera)
+    let controls = new THREE.OrbitControls(camera, renderer.domElement)
     controls.addEventListener('change', function () {
       renderer.render(scene, camera);
     })
