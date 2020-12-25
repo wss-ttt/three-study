@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .action {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 10px;
+      background: rgba(0, 0, 0, .3);
+      display: flex;
+    }
+
+    .action .btn {
+      color: #fff;
+      border: 1px solid #ccc;
+      padding: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 15px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="action">
+    <div class="btn">测试1</div>
+    <div class="btn">测试2</div>
+  </div>
+  <script src="js/three.js"></script>
+  <script src="js/OrbitControls.js"></script>
+  <script src="js/stats.min.js"></script>
+  <script src="js/dat.gui.min.js"></script>
+  <script>
+    // 1.场景 2.渲染器 3.相机
+
+    let scene;
+    let renderer;
+    let controls;
+    let camera;
+    let point, point2;
+    let mixer;
+    let clock;
+    init();
+    // 0.入口方法封装
+    function init() {
+      // 创建一个时钟
+      clock = new THREE.Clock();
+
+      initRender();
+      initScene();
+      initCamera();
+      initLight();
+      initModel();
+      initAxisHelper();
+      render();
+      initControls();
+    }
+
+    // 1.创建场景对象
+    function initScene() {
+      scene = new THREE.Scene()
+    }
+
+    // 2.创建渲染器对象
+    function initRender() {
+      renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight); //设置渲染区域尺寸
+      renderer.setClearColor(0xb9d3ff, 0.4); //设置背景颜色
+      document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
+    }
+
+    // 3.创建相机对象
+    function initCamera() {
+      initOrthographicCamera();
+    }
+
+    // 3.1正投影相机
+    function initOrthographicCamera() {
+      let width = window.innerWidth; //窗口宽度
+      let height = window.innerHeight; //窗口高度
+      let k = width / height; //窗口宽高比
+      let s = 200; //三维场景显示范围控制系数，系数越大，显示的范围越大
+      //创建相机对象
+      camera = new THREE.OrthographicCamera(-s * k, s * k, s, -s, 1, 1000);
+      camera.position.set(200, 300, 200); //设置相机位置
+      camera.lookAt(scene.position); //设置相机方向(指向的场景对象)
+    }
+
+    // 3.2透视投影相机
+    function initPerspectiveCamera() {
+      let width = window.innerWidth; //窗口宽度
+      let height = window.innerHeight; //窗口高度
+      //创建相机对象
+      camera = new THREE.PerspectiveCamera(60, width / height, 1, 1000);
+      camera.position.set(200, 300, 200); //设置相机位置
+      camera.lookAt(scene.position); //设置相机方向(指向的场景对象)
+    }
+
+    // 4.创建光源对象
+    function initLight() {
+      // 1.环境光 
+      let ambient = new THREE.AmbientLight(0x444444)
+      // 将环境光对象添加到场景去
+      scene.add(ambient)
+
+      // 2.点光源
+      point = new THREE.PointLight(0xffffff)
+      point.position.set(400, 200, 300)
+      // 将点光源添加到场景中去
+      scene.add(point)
+
+      // 2.点光源
+      point2 = new THREE.PointLight(0xffffff)
+      point2.position.set(-400, -200, -300)
+      // 将点光源添加到场景中去
+      scene.add(point2)
+    }
+
+    // 5.创建模型
+    function initModel() {
+      let geometry1 = new THREE.BoxGeometry(20, 10, 5);
+      // 材质对象
+      let material1 = new THREE.MeshLambertMaterial({
+        color: 0x1acd7e
+      })
+      // 网格对象
+      let mesh1 = new THREE.Mesh(
+        geometry1,
+        material1
+      )
+      mesh1.name = 'Box';
+      mesh1.translateX(20);
+
+      let geometry2 = new THREE.SphereGeometry(10, 60, 60);
+      let material2 = new THREE.MeshLambertMaterial({
+        color: 0xff00ff
+      })
+      let mesh2 = new THREE.Mesh(
+        geometry2,
+        material2
+      )
+      mesh2.name = 'Sphere';
+
+      let group = new THREE.Group();
+      group.add(mesh1, mesh2);
+      // 将网格模型对象添加场景中去
+      scene.add(group);
+
+      /**
+       * 编辑group子对象网格模型mesh1和mesh2的帧动画数据
+       */
+      // 创建名为Box对象的关键帧数据
+      let times = [0, 10]; //关键帧时间数组，离散的时间点序列
+      let values = [0, 0, 0, 150, 0, 0]; //与时间点对应的值组成的数组
+      // 创建位置关键帧对象：0时刻对应位置0, 0, 0   10时刻对应位置150, 0, 0
+      let posTrack = new THREE.KeyframeTrack('Box.position', times, values);
+      // 创建颜色关键帧对象：10时刻对应颜色1, 0, 0   20时刻对应颜色0, 0, 1
+      let colorKF = new THREE.KeyframeTrack('Box.material.color', [10, 20], [1, 0, 0, 0, 0, 1]);
+      // 创建名为Sphere对象的关键帧数据  从0~20时间段，尺寸scale缩放3倍
+      let scaleTrack = new THREE.KeyframeTrack('Sphere.scale', [0, 20], [1, 1, 1, 5, 5, 5]);
+
+      // duration决定了默认的播放时间，一般取所有帧动画的最大时间
+      // duration偏小，帧动画数据无法播放完，偏大，播放完帧动画会继续空播放
+      let duration = 20;
+      // 多个帧动画作为元素创建一个剪辑clip对象，命名"default"，持续时间20
+      let clip = new THREE.AnimationClip("default", duration, [posTrack, colorKF, scaleTrack]);
+
+      /**
+       * 播放编辑好的关键帧数据
+       */
+      // group作为混合器的参数，可以播放group中所有子对象的帧动画
+      mixer = new THREE.AnimationMixer(group);
+      // 剪辑clip作为参数，通过混合器clipAction方法返回一个操作对象AnimationAction
+      let AnimationAction = mixer.clipAction(clip);
+      //通过操作Action设置播放方式
+      AnimationAction.timeScale = 10; //默认1，可以调节播放速度
+      // AnimationAction.loop = THREE.LoopOnce; //不循环播放
+      AnimationAction.play(); //开始播放
+    }
+
+    // 6.封装渲染方法 -> 渲染图形
+    function render() {
+      //执行渲染操作   指定场景、相机作为参数
+      renderer.render(scene, camera);
+      requestAnimationFrame(render); //请求再次执行渲染函数render，渲染下一帧
+      // clock.getDelta()方法获得两帧的时间间隔
+      // 更新混合器相关的时间
+      mixer.update(clock.getDelta());
+    }
+
+    // 7.创建控制对象
+    function initControls() {
+      controls = new THREE.OrbitControls(camera, renderer.domElement)
+      controls.addEventListener('change', function () {
+        render();
+      })
+    }
+
+    // 8.辅助坐标系的显示
+    function initAxisHelper() {
+      let axisHelper = new THREE.AxisHelper(200)
+      scene.add(axisHelper);
+    }
+  </script>
+</body>
+
+</html>
