@@ -44,6 +44,7 @@
       initCamera();
       initLight();
       initModel();
+
       window.onresize = onResize;
     }
 
@@ -95,8 +96,8 @@
       let grid = new THREE.GridHelper(20, 20, 0x888888, 0x888888);
       grid.position.set(0, -1.1, 0);
       scene.add(grid);
-
-      // 2.ObjectLoader: 加载器
+      
+      // 2.ObjectLoader: 加载器 , load方法是个异步方法
       new THREE.ObjectLoader().load('data/pump.json', function (model) {
         scene.add(model);
         let clip = model.animations[0];
@@ -108,6 +109,12 @@
         AnimationAction.play();
         animate();
       });
+    }
+
+    // 6.封装渲染方法 -> 渲染图形
+    function render() {
+
+
     }
 
     // 6.窗口大小改变事件
