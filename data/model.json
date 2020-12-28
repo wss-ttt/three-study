@@ -1,0 +1,89 @@
+{
+  "metadata": {
+    "type": "Object",
+    "generator": "None (manually converted from collada file)"
+  },
+  "object": {
+    "uuid": "E33D8ADD-9C5D-4D26-8ADF-71DFB616547E",
+    "name": "Box",
+    "type": "Group",
+    "matrix": [
+      0.125,
+      0,
+      0,
+      0,
+      0,
+      0.125,
+      0,
+      0,
+      0,
+      0,
+      0.125,
+      0,
+      0,
+      0,
+      0,
+      1
+    ]
+  },
+  "animations": [
+    {
+      "name": "default",
+      "fps": 24,
+      "tracks": [
+        {
+          "type": "vector3",
+          "name": "Box.position",
+          "keys": [
+            {
+              "value": [
+                0,
+                0,
+                0
+              ],
+              "time": 0
+            },
+            {
+              "value": [
+                -100,
+                0,
+                0
+              ],
+              "time": 50
+            }
+          ]
+        },
+        {
+          "type": "quaternion",
+          "name": "Box.quaternion",
+          "keys": [
+            {
+              "value": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "time": 0
+            }
+          ]
+        },
+        {
+          "type": "color",
+          "name": "Box.material.color",
+          "keys": [
+            {
+              "value": [
+                1,
+                0,
+                0,
+                1
+              ],
+              "time": 20
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
