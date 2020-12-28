@@ -1,109 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>three.js webgl - animation - keyframes - json</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<style>
-			body {
-				color: #fff;
-				font-family:Monospace;
-				font-size:13px;
-				text-align:center;
-				background-color: #fff;
-				margin: 0px;
-				overflow: hidden;
-			}
-		</style>
-	</head>
 
-	<body>
+<head>
+  <title>three.js webgl - animation - keyframes - json</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <style>
+    body {
+      color: #fff;
+      font-family: Monospace;
+      font-size: 13px;
+      text-align: center;
+      background-color: #fff;
+      margin: 0px;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body>
 
 
-		<script src="js/three.js"></script>
+  <script src="js/three.js"></script>
 
-		<script src="js/Detector.js"></script>
-		<script src="js/stats.min.js"></script>
+  <script src="js/Detector.js"></script>
+  <script src="js/stats.min.js"></script>
 
-		<script>
+  <script>
+    let scene;
+    let renderer;
+    let pointLight;
+    let mixer;
 
-			let scene, camera, pointLight, stats;
-			let renderer, mixer, animationClip;
+    init();
 
-			let clock = new THREE.Clock();
+    // 0.入口方法封装
+    function init() {
+      // 创建一个时钟
+      clock = new THREE.Clock();
 
-			stats = new Stats();
-			document.body.appendChild( stats.dom );
+      intiScene();
+      initRender();
+      initCamera();
+      initLight();
+      initModel();
+      window.onresize = onResize;
+    }
 
-			renderer = new THREE.WebGLRenderer( { antialias: true } );
-			renderer.setPixelRatio( window.devicePixelRatio );
-			renderer.setSize( window.innerWidth, window.innerHeight );
-			document.body.appendChild( renderer.domElement );
+    // 1.创建场景对象
+    function intiScene() {
+      scene = new THREE.Scene();
+    }
 
-			scene = new THREE.Scene();
+    // 2.创建渲染器对象
+    function initRender() {
+      renderer = new THREE.WebGLRenderer({
+        antialias: true
+      });
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+    }
 
-			// 显示出网格平面
-			let grid = new THREE.GridHelper( 20, 20, 0x888888, 0x888888 );
-			grid.position.set( 0, - 1.1, 0 );
-			scene.add( grid );
+    // 3.创建相机对象
+    function initCamera() {
+      initPerspectiveCamera();
+    }
 
-			camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 100 );
-			camera.position.set( - 5.00, 3.43, 11.31 );
-			camera.lookAt( new THREE.Vector3( - 1.22, 2.18, 4.58 ) );
+    // 3.1正投影相机
+    function initOrthographicCamera() {
 
-			scene.add( new THREE.AmbientLight( 0x404040 ) );
+    }
 
-			pointLight = new THREE.PointLight( 0xffffff, 1 );
-			pointLight.position.copy( camera.position );
-			scene.add( pointLight );
+    // 3.2透视投影相机
+    function initPerspectiveCamera() {
+      camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 1, 100);
+      camera.position.set(-5.00, 3.43, 11.31);
+      camera.lookAt(new THREE.Vector3(-1.22, 2.18, 4.58));
+    }
 
-			// ObjectLoader: 加载器
-			new THREE.ObjectLoader().load( 'data/pump.json', function ( model ) {
-        console.log('model', model)
-				scene.add( model );
+    // 4.创建光源对象
+    function initLight() {
+      // 1.环境光
+      scene.add(new THREE.AmbientLight(0x404040));
+      // 2.点光源
+      pointLight = new THREE.PointLight(0xffffff, 1);
+      pointLight.position.copy(camera.position);
+      scene.add(pointLight);
+    }
 
-        let clip = model.animations[ 0 ];
+    // 5.创建模型
+    function initModel() {
+      // 1.显示出网格平面
+      let grid = new THREE.GridHelper(20, 20, 0x888888, 0x888888);
+      grid.position.set(0, -1.1, 0);
+      scene.add(grid);
 
-        console.log('clip', clip);
-				// AnimationMixer: 动画混合器是用于场景中特定对象的动画的播放器
-        mixer = new THREE.AnimationMixer( model );
+      // 2.ObjectLoader: 加载器
+      new THREE.ObjectLoader().load('data/pump.json', function (model) {
+        scene.add(model);
+        let clip = model.animations[0];
+        // AnimationMixer: 动画混合器是用于场景中特定对象的动画的播放器
+        mixer = new THREE.AnimationMixer(model);
         // 创建动画播放器对象
-        let AnimationAction = mixer.clipAction( clip );
+        let AnimationAction = mixer.clipAction(clip);
         // 开始播放
         AnimationAction.play();
+        animate();
+      });
+    }
 
-				animate();
+    // 6.窗口大小改变事件
+    function onResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
 
-			} );
+    // 7.动画
+    function animate() {
+      requestAnimationFrame(animate);
+      // getDelta: 获取自 oldTime 设置后到当前的秒数。 同时将 oldTime 设置为当前时间
+      // update: 推进混合器时间并更新动画
+      mixer.update(clock.getDelta());
+      renderer.render(scene, camera);
+    }
+  </script>
 
-
-			window.onresize = function () {
-
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
-
-				renderer.setSize( window.innerWidth, window.innerHeight );
-
-			};
-
-
-			function animate() {
-
-				requestAnimationFrame( animate );
-
-				// getDelta: 获取自 oldTime 设置后到当前的秒数。 同时将 oldTime 设置为当前时间
-				// update: 推进混合器时间并更新动画
-				mixer.update( clock.getDelta() );
-
-				stats.update();
-
-				renderer.render( scene, camera );
-
-			}
-
-
-		</script>
-
-	</body>
+</body>
 
 </html>
