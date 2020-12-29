@@ -24,53 +24,61 @@
   <script>
     if (!Detector.webgl) Detector.addGetWebGLMessage();
 
-    var renderer = new THREE.WebGLRenderer();
-    renderer.setPixelRatio(window.devicePixelRatio);
 
-    var camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 2000);
+    let scene;
+    let renderer;
+    let controls;
+    let camera;
+    let spotLight1;
+    let spotLight2;
+    let spotLight3;
+    let lightHelper1;
+    let lightHelper2;
+    let lightHelper3;
 
-    var controls = new THREE.OrbitControls(camera, renderer.domElement);
+    // 1.创建场景对象
+    function initScene() {
+      scene = new THREE.Scene();
+    }
 
-    var scene = new THREE.Scene();
-
-    var matFloor = new THREE.MeshPhongMaterial();
-    var matBox = new THREE.MeshPhongMaterial({
-      color: 0xaaaaaa
-    });
-
-    var geoFloor = new THREE.PlaneBufferGeometry(2000, 2000);
-    var geoBox = new THREE.BoxBufferGeometry(3, 1, 2);
-
-    var mshFloor = new THREE.Mesh(geoFloor, matFloor);
-    mshFloor.rotation.x = -Math.PI * 0.5;
-    var mshBox = new THREE.Mesh(geoBox, matBox);
-
-    var ambient = new THREE.AmbientLight(0x111111);
-
-    var spotLight1 = createSpotlight(0xFF7F00);
-    var spotLight2 = createSpotlight(0x00FF7F);
-    var spotLight3 = createSpotlight(0x7F00FF);
-
-    var lightHelper1, lightHelper2, lightHelper3;
-
-    function init() {
-
+    // 2.创建渲染器对象
+    function initRender() {
+      renderer = new THREE.WebGLRenderer();
+      renderer.setPixelRatio(window.devicePixelRatio);
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
       renderer.gammaInput = true;
       renderer.gammaOutput = true;
+      document.body.appendChild(renderer.domElement);
+    }
 
+    // 3.创建相机对象
+    function initCamera() {
+      camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 2000);
       camera.position.set(46, 22, -21);
+    }
 
-      spotLight1.position.set(15, 40, 45);
-      spotLight2.position.set(0, 40, 35);
-      spotLight3.position.set(-15, 40, 45);
+    // 创建控制对象
+    function initControls() {
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.target.set(0, 7, 0);
+      controls.maxPolarAngle = Math.PI / 2;
+      controls.update();
+    }
 
-      lightHelper1 = new THREE.SpotLightHelper(spotLight1);
-      lightHelper2 = new THREE.SpotLightHelper(spotLight2);
-      lightHelper3 = new THREE.SpotLightHelper(spotLight3);
+    function initModule() {
+      let matFloor = new THREE.MeshPhongMaterial();
+      let matBox = new THREE.MeshPhongMaterial({
+        // color: 0xaaaaaa
+        color: 0x1acd7e
+      });
 
+      let geoFloor = new THREE.PlaneBufferGeometry(20, 20);
+      let geoBox = new THREE.BoxBufferGeometry(3, 1, 2);
+
+      let mshFloor = new THREE.Mesh(geoFloor, matFloor);
+      mshFloor.rotation.x = -Math.PI * 0.5;
+      let mshBox = new THREE.Mesh(geoBox, matBox);
       matFloor.color.set(0x808080);
 
       mshFloor.receiveShadow = true;
@@ -79,26 +87,44 @@
       mshBox.castShadow = true;
       mshBox.receiveShadow = true;
       mshBox.position.set(0, 5, 0);
-
       scene.add(mshFloor);
       scene.add(mshBox);
+    }
+
+    function initLight() {
+      let ambient = new THREE.AmbientLight(0x111111);
+      spotLight1 = createSpotlight(0xFF7F00);
+      spotLight2 = createSpotlight(0x00FF7F);
+      spotLight3 = createSpotlight(0x7F00FF);
+      spotLight1.position.set(15, 40, 45);
+      spotLight2.position.set(0, 40, 35);
+      spotLight3.position.set(-15, 40, 45);
+      lightHelper1 = new THREE.SpotLightHelper(spotLight1);
+      lightHelper2 = new THREE.SpotLightHelper(spotLight2);
+      lightHelper3 = new THREE.SpotLightHelper(spotLight3);
       scene.add(ambient);
       scene.add(spotLight1, spotLight2, spotLight3);
       scene.add(lightHelper1, lightHelper2, lightHelper3);
+    }
 
-      document.body.appendChild(renderer.domElement);
+    init();
+    function init() {
+      initRender();
+      initScene();
+      initCamera();
+      initLight();
+      initModule();
       onResize();
+      render();
+      
+      initControls();
+      animate();
       window.addEventListener('resize', onResize, false);
-
-      controls.target.set(0, 7, 0);
-      controls.maxPolarAngle = Math.PI / 2;
-      controls.update();
-
     }
 
     function createSpotlight(color) {
 
-      var newObj = new THREE.SpotLight(color, 2);
+      let newObj = new THREE.SpotLight(color, 2);
 
       newObj.castShadow = true;
       newObj.angle = 0.3;
@@ -122,7 +148,6 @@
     }
 
     function tween(light) {
-
       new TWEEN.Tween(light).to({
           angle: (Math.random() * 0.7) + 0.1,
           penumbra: Math.random() + 1
@@ -139,7 +164,6 @@
     }
 
     function animate() {
-
       tween(spotLight1);
       tween(spotLight2);
       tween(spotLight3);
@@ -162,9 +186,7 @@
 
     }
 
-    init();
-    render();
-    animate();
+    
   </script>
 </body>
 
