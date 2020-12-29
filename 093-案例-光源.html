@@ -22,9 +22,8 @@
   <script src="js/Detector.js"></script>
 
   <script>
+    // 1.场景 2.渲染器 3.相机
     if (!Detector.webgl) Detector.addGetWebGLMessage();
-
-
     let scene;
     let renderer;
     let controls;
@@ -35,6 +34,21 @@
     let lightHelper1;
     let lightHelper2;
     let lightHelper3;
+
+    init();
+    // 0.入口方法
+    function init() {
+      initRender();
+      initScene();
+      initCamera();
+      initLight();
+      initModule();
+      onResize();
+      render();
+      initControls();
+      animate();
+      window.addEventListener('resize', onResize, false);
+    }
 
     // 1.创建场景对象
     function initScene() {
@@ -58,14 +72,24 @@
       camera.position.set(46, 22, -21);
     }
 
-    // 创建控制对象
-    function initControls() {
-      controls = new THREE.OrbitControls(camera, renderer.domElement);
-      controls.target.set(0, 7, 0);
-      controls.maxPolarAngle = Math.PI / 2;
-      controls.update();
+    // 4.创建光源对象
+    function initLight() {
+      let ambient = new THREE.AmbientLight(0x111111);
+      spotLight1 = createSpotlight(0xFF7F00);
+      spotLight2 = createSpotlight(0x00FF7F);
+      spotLight3 = createSpotlight(0x7F00FF);
+      spotLight1.position.set(15, 40, 45);
+      spotLight2.position.set(0, 40, 35);
+      spotLight3.position.set(-15, 40, 45);
+      lightHelper1 = new THREE.SpotLightHelper(spotLight1);
+      lightHelper2 = new THREE.SpotLightHelper(spotLight2);
+      lightHelper3 = new THREE.SpotLightHelper(spotLight3);
+      scene.add(ambient);
+      scene.add(spotLight1, spotLight2, spotLight3);
+      scene.add(lightHelper1, lightHelper2, lightHelper3);
     }
 
+    // 5.创建模型
     function initModule() {
       let matFloor = new THREE.MeshPhongMaterial();
       let matBox = new THREE.MeshPhongMaterial({
@@ -91,54 +115,41 @@
       scene.add(mshBox);
     }
 
-    function initLight() {
-      let ambient = new THREE.AmbientLight(0x111111);
-      spotLight1 = createSpotlight(0xFF7F00);
-      spotLight2 = createSpotlight(0x00FF7F);
-      spotLight3 = createSpotlight(0x7F00FF);
-      spotLight1.position.set(15, 40, 45);
-      spotLight2.position.set(0, 40, 35);
-      spotLight3.position.set(-15, 40, 45);
-      lightHelper1 = new THREE.SpotLightHelper(spotLight1);
-      lightHelper2 = new THREE.SpotLightHelper(spotLight2);
-      lightHelper3 = new THREE.SpotLightHelper(spotLight3);
-      scene.add(ambient);
-      scene.add(spotLight1, spotLight2, spotLight3);
-      scene.add(lightHelper1, lightHelper2, lightHelper3);
+    // 6.封装渲染方法 -> 渲染图形
+    function render() {
+
+      TWEEN.update();
+
+      if (lightHelper1) lightHelper1.update();
+      if (lightHelper2) lightHelper2.update();
+      if (lightHelper3) lightHelper3.update();
+
+      renderer.render(scene, camera);
+      requestAnimationFrame(render);
     }
 
-    init();
-    function init() {
-      initRender();
-      initScene();
-      initCamera();
-      initLight();
-      initModule();
-      onResize();
-      render();
-      
-      initControls();
-      animate();
-      window.addEventListener('resize', onResize, false);
+    // 7.创建控制对象
+    function initControls() {
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.target.set(0, 7, 0);
+      controls.maxPolarAngle = Math.PI / 2;
+      controls.update();
     }
 
+    // 8.创建聚光源方法封装
     function createSpotlight(color) {
-
       let newObj = new THREE.SpotLight(color, 2);
-
       newObj.castShadow = true;
       newObj.angle = 0.3;
       newObj.penumbra = 0.2;
       newObj.decay = 2;
       newObj.distance = 50;
-
       newObj.shadow.mapSize.width = 1024;
       newObj.shadow.mapSize.height = 1024;
-
       return newObj;
-
     }
 
+    // 9.窗口大小改变事件
     function onResize() {
 
       camera.aspect = window.innerWidth / window.innerHeight;
@@ -147,6 +158,15 @@
 
     }
 
+    // 10.动画封装
+    function animate() {
+      tween(spotLight1);
+      tween(spotLight2);
+      tween(spotLight3);
+      setTimeout(animate, 5000);
+    }
+
+    // 11.tween方法封装
     function tween(light) {
       new TWEEN.Tween(light).to({
           angle: (Math.random() * 0.7) + 0.1,
@@ -160,33 +180,7 @@
           z: (Math.random() * 30) - 15
         }, Math.random() * 3000 + 2000)
         .easing(TWEEN.Easing.Quadratic.Out).start();
-
     }
-
-    function animate() {
-      tween(spotLight1);
-      tween(spotLight2);
-      tween(spotLight3);
-
-      setTimeout(animate, 5000);
-
-    }
-
-    function render() {
-
-      TWEEN.update();
-
-      if (lightHelper1) lightHelper1.update();
-      if (lightHelper2) lightHelper2.update();
-      if (lightHelper3) lightHelper3.update();
-
-      renderer.render(scene, camera);
-
-      requestAnimationFrame(render);
-
-    }
-
-    
   </script>
 </body>
 
