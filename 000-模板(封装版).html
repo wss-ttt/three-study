@@ -75,6 +75,7 @@
     let controls;
     let camera;
     let point, point2;
+    let mesh;
 
     init();
     // 0.入口方法封装
@@ -157,7 +158,7 @@
         color: 0x1acd7e
       })
       // 网格对象
-      let mesh = new THREE.Mesh(
+      mesh = new THREE.Mesh(
         geometry,
         material
       )
@@ -167,15 +168,22 @@
 
     // 6.封装渲染方法 -> 渲染图形
     function render() {
+      if(mesh) {
+        mesh.rotateX(0.01);
+        mesh.rotateY(0.01);
+        mesh.rotateZ(0.01);
+      }
       //执行渲染操作   指定场景、相机作为参数
       renderer.render(scene, camera);
-      /* mesh.rotateX(0.01);
-      mesh.rotateY(0.01);
-      mesh.rotateZ(0.01);
-      requestAnimationFrame(render); */
     }
 
-    // 7.创建控制对象
+    // 7.动画方法
+    function animate() {
+      render();
+      requestAnimationFrame(animate);
+    }
+
+    // 8.创建控制对象
     function initControls() {
       controls = new THREE.OrbitControls(camera, renderer.domElement)
       controls.addEventListener('change', function () {
@@ -183,7 +191,7 @@
       })
     }
 
-    // 8.辅助坐标系的显示
+    // 9.辅助坐标系的显示
     function initAxisHelper() {
       let axisHelper = new THREE.AxisHelper(200)
       scene.add(axisHelper);
