@@ -67,14 +67,27 @@
     }
 
     function initModule() {
-      let geometry = new THREE.CylinderGeometry(10, 15, 40);
+      let geometry = new THREE.SphereGeometry(10, 10, 10);
       let material = new THREE.MeshLambertMaterial({
         color: 0x1acd7e
       });
       mesh = new THREE.Mesh(geometry, material);
       mesh.position = new THREE.Vector3(0, 0, 0);
       scene.add(mesh);
+
+      let sphere = new THREE.BoxGeometry(100, 100, 100);
+      let sphereMaterial = new THREE.MeshLambertMaterial({
+        color: 0xffbb33,
+        wireframe: true
+      });
+      let sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
+      // 平移物体元素
+      sphereMesh.translateX(50);
+      sphereMesh.translateY(50);
+      sphereMesh.translateZ(50);
+      scene.add(sphereMesh);
     }
+
 
     // 8.辅助坐标系的显示
     function initAxisHelper() {
