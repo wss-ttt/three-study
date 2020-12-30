@@ -81,17 +81,17 @@
 
     init();
     // 0.入口方法封装
-    function init() {
+    async function init() {
       initRender();
       initScene();
       initCamera();
       initLight();
-      initModel();
+      await initModel();
       initAxisHelper();
       animate();
       initControls();
 
-      window.addEventListener( 'resize', onWindowResize, false );
+      window.addEventListener('resize', onWindowResize, false);
     }
 
     // 1.创建场景对象
@@ -158,14 +158,18 @@
     function initModel() {
       let loader = new THREE.JSONLoader();
       // 加载外部模型数据json 该方法是异步方法
-      loader.load('data/WaltHeadLo.json', function (geometry) {
-        // 法线网格材质
-        let material = new THREE.MeshNormalMaterial({
-          overdraw: 0.5
-        });
-        mesh = new THREE.Mesh(geometry, material);
-        // 将网格模型对象添加场景中去
-        scene.add(mesh)
+      return new Promise((resolve, reject) => {
+        loader.load('data/WaltHeadLo.json', function (geometry) {
+          console.log('load')
+          // 法线网格材质
+          let material = new THREE.MeshNormalMaterial({
+            overdraw: 0.5
+          });
+          mesh = new THREE.Mesh(geometry, material);
+          // 将网格模型对象添加场景中去
+          scene.add(mesh)
+          resolve();
+        })
       })
     }
 
@@ -183,8 +187,9 @@
 
     // 7.动画方法
     function animate() {
+      console.log('animate');
       render()
-      requestAnimationFrame(animate);
+      // requestAnimationFrame(animate);
     }
 
     // 8.创建控制对象
